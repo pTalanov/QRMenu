@@ -48,7 +48,7 @@ public class QRMenuMainActivity extends ListActivity {
                 itemText.setText(orders.get(position).getName());
                 TextView priceText = (TextView) view.findViewById(R.id.priceText);
                 priceText.setText(priceFormat(QRMenuMainActivity.this.orders.get(position).getCost()));
-                Button deleteButton = (Button) view.findViewById(R.id.deleteButton);
+                ImageButton deleteButton = (ImageButton) view.findViewById(R.id.deleteButton);
                 deleteButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

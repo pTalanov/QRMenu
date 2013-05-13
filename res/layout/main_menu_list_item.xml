@@ -16,19 +16,17 @@
               android:paddingLeft="6dip"
               android:layout_alignParentLeft="true"/>
 
-    <Button android:background="#000000"
-            android:textColor="#FFFFFF"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:gravity="center_vertical"
-            android:minHeight="?android:attr/listPreferredItemHeight"
-            android:paddingLeft="20dip"
-            android:id="@+id/deleteButton"
-            android:text="Delete"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            />
+    <ImageButton android:src="@drawable/delete_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:minHeight="?android:attr/listPreferredItemHeight"
+                android:id="@+id/deleteButton"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:contentDescription="Delete"
+                android:background="#000000"
+                android:scaleType="fitCenter"/>
 
     <TextView android:background="#555"
             android:textColor="#FFFFFF"
