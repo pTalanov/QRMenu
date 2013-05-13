@@ -94,11 +94,16 @@ public class QRMenuMainActivity extends ListActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (SCAN_QR_CODE_REQUEST_CODE == requestCode) {
+        if (requestCode == SCAN_QR_CODE_REQUEST_CODE) {
             switch (resultCode) {
                 case RESULT_OK: {
                     String scanResult = data.getStringExtra("SCAN_RESULT");
-                    orders.add(EntitiesSerializationHelper.parseMenuItem(scanResult));
+                    RestaurantMenuItem menuItem = EntitiesSerializationHelper.parseMenuItem(scanResult);
+                    if (menuItem == null) {
+                        Toast.makeText(this, "Sorry. That is not a valid QR Code.", Toast.LENGTH_LONG).show();
+                    } else {
+                        orders.add(menuItem);
+                    }
                     break;
                 }
                 default: {
