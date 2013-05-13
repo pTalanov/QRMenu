@@ -6,27 +6,22 @@ public class RestaurantTable {
     private String myUrl;
     private int myTableId;
 
-    public String getRestaurantName() {
-        return myRestaurantName;
+    public RestaurantTable(String restaurantName, String url, int tableId) {
+        this.myRestaurantName = restaurantName;
+        this.myUrl = url;
+        this.myTableId = tableId;
     }
 
-    public void setRestaurantName(String restaurantName) {
-        this.myRestaurantName = restaurantName;
+    public String getRestaurantName() {
+        return myRestaurantName;
     }
 
     public String getUrl() {
         return myUrl;
     }
 
-    public void setUrl(String url) {
-        this.myUrl = url;
-    }
-
     public int getTableId() {
         return myTableId;
     }
 
-    public void setTableId(int tableId) {
-        this.myTableId = tableId;
-    }
 }
