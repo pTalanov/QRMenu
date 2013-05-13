@@ -5,11 +5,13 @@ import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import ru.spbau.qrmenu.entities.RestaurantMenuItem;
+import ru.spbau.qrmenu.entities.RestaurantTable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,10 +19,13 @@ import java.util.List;
 public class QRMenuMainActivity extends ListActivity {
 
     private static final int SCAN_QR_CODE_REQUEST_CODE = 0;
+    public static final String TAG = "ru.spbau.qrmenu.QRMenuMainActivity";
 
     private List<RestaurantMenuItem> orders;
 
     private ArrayAdapter<RestaurantMenuItem> listAdapter;
+
+    private RestaurantTable table;
 
     public QRMenuMainActivity() {
     }
@@ -28,6 +33,7 @@ public class QRMenuMainActivity extends ListActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTable();
         setContentView(R.layout.main);
         orders = new ArrayList<RestaurantMenuItem>();
         RestaurantMenuItem restaurantMenuItem = new RestaurantMenuItem("Burger", 3.2);
@@ -55,6 +61,13 @@ public class QRMenuMainActivity extends ListActivity {
         };
         setListAdapter(listAdapter);
         refreshListView();
+    }
+
+    private void setTable() {
+        Intent intent = getIntent();
+        String jsonTable = intent.getStringExtra(QRMenuStartActivity.EXTRA_MESSAGE);
+        Log.i(TAG, "JSON: " + jsonTable);
+        this.table = EntitiesSerializationHelper.parseTable(jsonTable);
     }
 
     private String priceFormat(double price) {
