@@ -1,6 +1,8 @@
 package ru.spbau.qrmenu;
 
+import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -39,7 +41,7 @@ public class QRMenuMainActivity extends ListActivity {
                 TextView itemText = (TextView) view.findViewById(R.id.itemText);
                 itemText.setText(orders.get(position).getName());
                 TextView priceText = (TextView) view.findViewById(R.id.priceText);
-                priceText.setText(String.format("%1$,.2f", orders.get(position).getCost()));
+                priceText.setText(priceFormat(QRMenuMainActivity.this.orders.get(position).getCost()));
                 Button deleteButton = (Button) view.findViewById(R.id.deleteButton);
                 deleteButton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -55,6 +57,10 @@ public class QRMenuMainActivity extends ListActivity {
         refreshListView();
     }
 
+    private String priceFormat(double price) {
+        return String.format("%1$,.2f", price);
+    }
+
     @SuppressWarnings("UnusedParameters")
     public void onScanCodeClick(View view) {
         Intent intent = new Intent("com.google.zxing.client.android.SCAN");
@@ -65,7 +71,25 @@ public class QRMenuMainActivity extends ListActivity {
 
     @SuppressWarnings("UnusedParameters")
     public void onMakeOrderClick(View view) {
-        Toast.makeText(this, "Please wait. You order will soon be ready.", Toast.LENGTH_LONG).show();
+        String total = priceFormat(calculateOrderTotal());
+        new AlertDialog.Builder(this)
+                .setTitle("Make order")
+                .setMessage("Are you sure you want to make this order for a total of " + total + "?")
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        Toast.makeText(QRMenuMainActivity.this, "Please wait. You order will soon be ready.", Toast.LENGTH_LONG).show();
+                    }
+                })
+                .setNegativeButton(android.R.string.no, null).show();
+    }
+
+    private double calculateOrderTotal() {
+        double result = 0;
+        for (RestaurantMenuItem order : orders) {
+            result += order.getCost();
+        }
+        return result;
     }
 
     @Override
