@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+import ru.spbau.qrmenu.entities.RestaurantMenuItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,9 +16,9 @@ public class QRMenuMainActivity extends ListActivity {
 
     private static final int SCAN_QR_CODE_REQUEST_CODE = 0;
 
-    private List<String> orders;
+    private List<RestaurantMenuItem> orders;
 
-    private ArrayAdapter<String> listAdapter;
+    private ArrayAdapter<RestaurantMenuItem> listAdapter;
 
     public QRMenuMainActivity() {
     }
@@ -26,17 +27,19 @@ public class QRMenuMainActivity extends ListActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        orders = new ArrayList<String>();
-        orders.add("Sample order1");
-        orders.add("Sample order2");
-        listAdapter = new ArrayAdapter<String>(this, R.layout.main_menu_list_item, orders) {
+        orders = new ArrayList<RestaurantMenuItem>();
+        RestaurantMenuItem restaurantMenuItem = new RestaurantMenuItem("Burger", 3.2);
+        orders.add(restaurantMenuItem);
+        orders.add(restaurantMenuItem);
+        listAdapter = new ArrayAdapter<RestaurantMenuItem>(this, R.layout.main_menu_list_item, orders) {
             @Override
             public View getView(final int position, View convertView, ViewGroup parent) {
                 final LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-
                 View view = inflater.inflate(R.layout.main_menu_list_item, parent, false);
                 TextView itemText = (TextView) view.findViewById(R.id.itemText);
-                itemText.setText(orders.get(position));
+                itemText.setText(orders.get(position).getName());
+                TextView priceText = (TextView) view.findViewById(R.id.priceText);
+                priceText.setText(String.format("%1$,.2f", orders.get(position).getCost()));
                 Button deleteButton = (Button) view.findViewById(R.id.deleteButton);
                 deleteButton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -71,11 +74,13 @@ public class QRMenuMainActivity extends ListActivity {
             switch (resultCode) {
                 case RESULT_OK: {
                     String scanResult = data.getStringExtra("SCAN_RESULT");
-                    orders.add(scanResult);
+                    orders.add(EntitiesSerializationHelper.parseMenuItem(scanResult));
                     break;
                 }
                 default: {
-                    orders.add("Canceled");
+                    //TODO: do nothing
+                    RestaurantMenuItem newItem = new RestaurantMenuItem("Milk shake", 20.12);
+                    orders.add(newItem);
                     break;
                 }
             }
