@@ -9,7 +9,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
+import android.widget.TextView;
+import android.widget.Toast;
 import ru.spbau.qrmenu.entities.RestaurantMenuItem;
 import ru.spbau.qrmenu.entities.RestaurantTable;
 
@@ -36,9 +39,19 @@ public class QRMenuMainActivity extends ListActivity {
         setTable();
         setContentView(R.layout.main);
         orders = new ArrayList<RestaurantMenuItem>();
-        RestaurantMenuItem restaurantMenuItem = new RestaurantMenuItem("Burger", 3.2);
-        orders.add(restaurantMenuItem);
-        orders.add(restaurantMenuItem);
+        setUpRestaurantNameView();
+        setUpListAdapter();
+    }
+
+    private void setUpRestaurantNameView() {
+        if (table.getRestaurantName() == null) {
+            return;
+        }
+        TextView restaurantName = (TextView) findViewById(R.id.restaurant_name);
+        restaurantName.setText(table.getRestaurantName());
+    }
+
+    private void setUpListAdapter() {
         listAdapter = new ArrayAdapter<RestaurantMenuItem>(this, R.layout.main_menu_list_item, orders) {
             @Override
             public View getView(final int position, View convertView, ViewGroup parent) {
