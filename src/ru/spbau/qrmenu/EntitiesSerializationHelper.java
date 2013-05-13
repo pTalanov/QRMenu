@@ -29,7 +29,16 @@ public final class EntitiesSerializationHelper {
     }
 
     public static String serializeMenuItem(RestaurantMenuItem rmi) {
-        return rmi.toString();
+        try {
+            JSONObject jObj = new JSONObject();
+
+            jObj.put("name", rmi.getName());
+            jObj.put("cost", rmi.getCost());
+
+            return jObj.toString();
+        } catch (JSONException je) {
+            return null; //never executes
+        }
     }
 
     public static RestaurantTable parseTable(String json) {
@@ -51,7 +60,17 @@ public final class EntitiesSerializationHelper {
     }
 
     public static String serializeTable(RestaurantTable table) {
-        return table.toString();
+        try {
+            JSONObject jObj = new JSONObject();
+
+            jObj.put("name", table.getRestaurantName());
+            jObj.put("url", table.getUrl());
+            jObj.put("tableId", table.getTableId());
+
+            return jObj.toString();
+        } catch (JSONException je) {
+            return null; //never executes
+        }
     }
 
 }
