@@ -23,9 +23,6 @@ public class QRMenuStartActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.start);
-
-
-
         Button b = (Button) findViewById(R.id.button);
         b.setOnClickListener(new View.OnClickListener() {
             @Override
