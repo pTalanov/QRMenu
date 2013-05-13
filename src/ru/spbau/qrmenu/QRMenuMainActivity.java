@@ -3,7 +3,7 @@ package ru.spbau.qrmenu;
 import android.app.Activity;
 import android.os.Bundle;
 
-public class QrMenuMain extends Activity {
+public class QRMenuMainActivity extends Activity {
     /**
      * Called when the activity is first created.
      */
