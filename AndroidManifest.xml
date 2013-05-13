@@ -23,7 +23,7 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <activity android:name=".QRMenuStartActivity" android:label="Restaurant Chooser">
+        <activity android:name=".QRMenuStartActivity" android:label="QR Menu">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
