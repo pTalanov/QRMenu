@@ -37,13 +37,20 @@ public class QRMenuStartActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (SCAN_QR_CODE_REQUEST_CODE == requestCode) {
-            String jsonTable = data.getStringExtra("SCAN_RESULT");
-            if(resultCode == RESULT_OK && EntitiesSerializationHelper.parseTable(jsonTable) != null) {
-                startMainActivity(jsonTable);
+            if (resultCode == RESULT_OK) {
+                String jsonTable = data.getStringExtra("SCAN_RESULT");
+                if(EntitiesSerializationHelper.parseTable(jsonTable) != null) {
+                    startMainActivity(jsonTable);
+                    return;
+                }
             }
-            TextView tv = (TextView) findViewById(R.id.textView);
-            tv.setText("Repeat scan, please");
+            showRepeatScanMessage();
         }
+    }
+
+    private void showRepeatScanMessage() {
+        TextView tv = (TextView) findViewById(R.id.textView);
+        tv.setText("Repeat scan, please");
     }
 
     private void startMainActivity(String result) {
