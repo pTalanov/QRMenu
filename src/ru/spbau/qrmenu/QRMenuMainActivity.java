@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,9 +14,19 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.google.zxing.client.android.HttpHelper;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
 import ru.spbau.qrmenu.entities.RestaurantMenuItem;
 import ru.spbau.qrmenu.entities.RestaurantTable;
 
+import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,6 +108,10 @@ public class QRMenuMainActivity extends ListActivity {
 
     @SuppressWarnings("UnusedParameters")
     public void onMakeOrderClick(View view) {
+        if (orders.isEmpty()) {
+            Toast.makeText(this, "You should select at least 1 item", Toast.LENGTH_SHORT).show();
+            return;
+        }
         String total = priceFormat(calculateOrderTotal());
         new AlertDialog.Builder(this)
                 .setTitle("Make order")
@@ -104,7 +119,23 @@ public class QRMenuMainActivity extends ListActivity {
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        Toast.makeText(QRMenuMainActivity.this, "Please wait. You order will soon be ready.", Toast.LENGTH_LONG).show();
+                        new AsyncTask<Void, Void, Boolean>() {
+                            @Override
+                            protected Boolean doInBackground(Void... voids) {
+                                final boolean result = postData();
+                                QRMenuMainActivity.this.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (result) {
+                                            Toast.makeText(QRMenuMainActivity.this, "Please wait. You order will soon be ready.", Toast.LENGTH_LONG).show();
+                                        } else {
+                                            Toast.makeText(QRMenuMainActivity.this, "Failed to submit data to server.", Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+                                });
+                                return result;
+                            }
+                        }.execute();
                     }
                 })
                 .setNegativeButton(android.R.string.no, null).show();
@@ -146,4 +177,58 @@ public class QRMenuMainActivity extends ListActivity {
     private void refreshListView() {
         listAdapter.notifyDataSetChanged();
     }
+
+
+    public boolean postData() {
+        try {
+            HttpClient httpclient = new DefaultHttpClient();
+            httpclient.getParams().setBooleanParameter("http.protocol.expect-continue", false);
+
+            //TODO replace with scanned url
+            HttpPost httppost = new HttpPost("http://agile-garden-1704.herokuapp.com/orders/");
+
+            httppost.setHeader("Content-type", "application/xml");
+
+            StringEntity se = new StringEntity(createPostMessage(), "UTF8");
+
+            httppost.setEntity(se);
+
+            httpclient.execute(httppost);
+
+            return true;
+        } catch (ClientProtocolException e) {
+        } catch (IOException e) {
+        }
+
+        return false;
+    }
+
+    private String createPostMessage() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("<order><table_num>");
+        sb.append(table.getTableId());
+        sb.append("</table_num>");
+
+        sb.append("<items>");
+        for (RestaurantMenuItem mi : orders) {
+            sb.append(mi.getName());
+            sb.append(",");
+        }
+        sb.setLength(sb.length() - 1);
+        sb.append("</items>");
+
+        sb.append("<prices>");
+        for (RestaurantMenuItem mi : orders) {
+            sb.append(mi.getCost());
+            sb.append(",");
+        }
+        sb.setLength(sb.length() - 1);
+        sb.append("</prices>");
+
+        sb.append("</order>");
+
+        return sb.toString();
+    }
+
 }

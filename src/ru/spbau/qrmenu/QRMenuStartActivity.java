@@ -58,4 +58,5 @@ public class QRMenuStartActivity extends Activity {
         intent.putExtra(EXTRA_MESSAGE, result);
         startActivity(intent);
     }
+
 }
