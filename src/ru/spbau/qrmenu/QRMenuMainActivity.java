@@ -184,8 +184,7 @@ public class QRMenuMainActivity extends ListActivity {
             HttpClient httpclient = new DefaultHttpClient();
             httpclient.getParams().setBooleanParameter("http.protocol.expect-continue", false);
 
-            //TODO replace with scanned url
-            HttpPost httppost = new HttpPost("http://agile-garden-1704.herokuapp.com/orders/");
+            HttpPost httppost = new HttpPost(table.getUrl());
 
             httppost.setHeader("Content-type", "application/xml");
 
