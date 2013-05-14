@@ -16,7 +16,7 @@
               android:layout_height="match_parent"
               android:background="#666666"
               android:textSize="30dp"
-              android:text="Зеленый элефант"
+              android:text="Ресторант Зеленый элефант"
               android:id="@+id/restaurant_name"
               android:gravity="center" android:padding="4dp"/>
 
